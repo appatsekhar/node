@@ -63,6 +63,7 @@
       "<(V8_ROOT)/src/builtins/regexp-replace.tq",
       "<(V8_ROOT)/src/builtins/regexp-search.tq",
       "<(V8_ROOT)/src/builtins/regexp-source.tq",
+      "<(V8_ROOT)/src/builtins/regexp-split.tq",
       "<(V8_ROOT)/src/builtins/regexp-test.tq",
       "<(V8_ROOT)/src/builtins/regexp.tq",
       "<(V8_ROOT)/src/builtins/string.tq",
