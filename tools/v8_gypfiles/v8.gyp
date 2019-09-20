@@ -59,6 +59,7 @@
       "<(V8_ROOT)/src/builtins/proxy-set-prototype-of.tq",
       "<(V8_ROOT)/src/builtins/proxy.tq",
       "<(V8_ROOT)/src/builtins/reflect.tq",
+      "<(V8_ROOT)/src/builtins/regexp-exec.tq",
       "<(V8_ROOT)/src/builtins/regexp-match.tq",
       "<(V8_ROOT)/src/builtins/regexp-replace.tq",
       "<(V8_ROOT)/src/builtins/regexp-search.tq",
