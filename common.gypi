@@ -238,6 +238,7 @@
     # Defines these mostly for node-gyp to pickup, and warn addon authors of
     # imminent V8 deprecations, also to sync how dependencies are configured.
     'defines': [
+      'V8_31BIT_SMIS_ON_64BIT_ARCH',
       'V8_DEPRECATION_WARNINGS',
       'V8_IMMINENT_DEPRECATION_WARNINGS',
     ],
