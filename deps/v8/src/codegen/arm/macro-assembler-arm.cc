@@ -573,7 +573,7 @@ void MacroAssembler::Ubfx(Register dst, Register src1, int lsb, int width,
                           Condition cond) {
   DCHECK_LT(lsb, 32);
   if (!CpuFeatures::IsSupported(ARMv7) || predictable_code_size()) {
-    int mask = (1 << (width + lsb)) - 1 - ((1 << lsb) - 1);
+    int mask = (1u << (width + lsb)) - 1u - ((1u << lsb) - 1u);
     and_(dst, src1, Operand(mask), LeaveCC, cond);
     if (lsb != 0) {
       mov(dst, Operand(dst, LSR, lsb), LeaveCC, cond);
@@ -1617,11 +1617,10 @@ void MacroAssembler::CheckDebugHook(Register fun, Register new_target,
   {
     // Load receiver to pass it later to DebugOnFunctionCall hook.
     if (actual.is_reg()) {
-      mov(r4, actual.reg());
+      ldr(r4, MemOperand(sp, actual.reg(), LSL, kPointerSizeLog2));
     } else {
-      mov(r4, Operand(actual.immediate()));
+      ldr(r4, MemOperand(sp, actual.immediate() << kPointerSizeLog2));
     }
-    ldr(r4, MemOperand(sp, r4, LSL, kPointerSizeLog2));
     FrameScope frame(this,
                      has_frame() ? StackFrame::NONE : StackFrame::INTERNAL);
     if (expected.is_reg()) {

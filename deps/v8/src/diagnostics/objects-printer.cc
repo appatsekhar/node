@@ -1379,7 +1379,6 @@ void JSArrayBuffer::JSArrayBufferPrint(std::ostream& os) {  // NOLINT
   if (is_detachable()) os << "\n - detachable";
   if (was_detached()) os << "\n - detached";
   if (is_shared()) os << "\n - shared";
-  if (is_wasm_memory()) os << "\n - is_wasm_memory";
   JSObjectPrintBody(os, *this, !was_detached());
 }
 
@@ -1389,6 +1388,12 @@ void JSTypedArray::JSTypedArrayPrint(std::ostream& os) {  // NOLINT
   os << "\n - byte_offset: " << byte_offset();
   os << "\n - byte_length: " << byte_length();
   os << "\n - length: " << length();
+  os << "\n - data_ptr: " << DataPtr();
+  Tagged_t base_ptr = static_cast<Tagged_t>(base_pointer().ptr());
+  os << "\n   - base_pointer: "
+     << reinterpret_cast<void*>(static_cast<Address>(base_ptr));
+  os << "\n   - external_pointer: "
+     << reinterpret_cast<void*>(external_pointer());
   if (!buffer().IsJSArrayBuffer()) {
     os << "\n <invalid buffer>\n";
     return;
@@ -1627,7 +1632,7 @@ void Code::CodePrint(std::ostream& os) {  // NOLINT
   os << "\n";
 #ifdef ENABLE_DISASSEMBLER
   if (FLAG_use_verbose_printer) {
-    Disassemble(nullptr, os);
+    Disassemble(nullptr, os, GetIsolate());
   }
 #endif
 }
@@ -2298,6 +2303,9 @@ void ScopeInfo::ScopeInfoPrint(std::ostream& os) {  // NOLINT
   if (HasInferredFunctionName()) {
     os << "\n - inferred function name: " << Brief(InferredFunctionName());
   }
+  if (CanElideThisHoleChecks()) {
+    os << "\n - can elide this hole checks";
+  }
 
   if (HasPositionInfo()) {
     os << "\n - start position: " << StartPosition();
@@ -2816,7 +2824,7 @@ V8_EXPORT_PRIVATE extern void _v8_internal_Print_Code(void* object) {
   }
 #ifdef ENABLE_DISASSEMBLER
   i::StdoutStream os;
-  code.Disassemble(nullptr, os, address);
+  code.Disassemble(nullptr, os, isolate, address);
 #else   // ENABLE_DISASSEMBLER
   code.Print();
 #endif  // ENABLE_DISASSEMBLER

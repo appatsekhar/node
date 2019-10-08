@@ -545,7 +545,8 @@ bool Map::CanBeDeprecated() const {
     PropertyDetails details = instance_descriptors().GetDetails(i);
     if (details.representation().IsNone()) return true;
     if (details.representation().IsSmi()) return true;
-    if (details.representation().IsDouble()) return true;
+    if (details.representation().IsDouble() && FLAG_unbox_double_fields)
+      return true;
     if (details.representation().IsHeapObject()) return true;
     if (details.kind() == kData && details.location() == kDescriptor) {
       return true;
@@ -675,8 +676,10 @@ void Map::AppendDescriptor(Isolate* isolate, Descriptor* desc) {
     // barrier.
     descriptors.Append(desc);
     SetNumberOfOwnDescriptors(number_of_own_descriptors + 1);
+#ifndef V8_DISABLE_WRITE_BARRIERS
     MarkingBarrierForDescriptorArray(isolate->heap(), *this, descriptors,
                                      number_of_own_descriptors + 1);
+#endif
   }
   // Properly mark the map if the {desc} is an "interesting symbol".
   if (desc->GetKey()->IsInterestingSymbol()) {
